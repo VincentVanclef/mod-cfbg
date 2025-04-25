@@ -178,6 +178,9 @@ CFBG* CFBG::instance()
 void CFBG::LoadConfig()
 {
     _IsEnableSystem = sConfigMgr->GetOption<bool>("CFBG.Enable", false);
+    if (!_IsEnableSystem)
+        return;
+
     _IsEnableAvgIlvl = sConfigMgr->GetOption<bool>("CFBG.Include.Avg.Ilvl.Enable", false);
     _IsEnableBalancedTeams = sConfigMgr->GetOption<bool>("CFBG.BalancedTeams", false);
     _IsEnableEvenTeams = sConfigMgr->GetOption<bool>("CFBG.EvenTeams.Enabled", false);
@@ -357,7 +360,7 @@ bool CFBG::IsAvgIlvlTeamsInBgEqual(Battleground* bg)
 
 void CFBG::ValidatePlayerForBG(Battleground* bg, Player* player)
 {
-    if (!_IsEnableSystem || !bg || bg->isArena() || !player || bg->GetBgTypeID() == BATTLEGROUND_BR)
+    if (!_IsEnableSystem || !bg || bg->isArena() || !player)
         return;
 
     TeamId teamId{ player->GetBgTeamId() };
@@ -518,7 +521,7 @@ void CFBG::DoForgetPlayersInList(Player* player)
 
 void CFBG::FitPlayerInTeam(Player* player, bool action, Battleground* bg)
 {
-    if (!_IsEnableSystem || bg->GetBgTypeID() == BATTLEGROUND_BR)
+    if (!_IsEnableSystem)
         return;
 
     if (!bg)
@@ -649,7 +652,7 @@ bool CFBG::CheckCrossFactionMatch(BattlegroundQueue* queue, BattlegroundBracketI
 
 bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, BattlegroundBracketId bracket_id)
 {
-    if (!IsEnableSystem() || bg->isArena() || bg->isRated() || bg->GetBgTypeID() == BATTLEGROUND_BR)
+    if (!IsEnableSystem() || bg->isArena() || bg->isRated())
         return false;
 
     uint32 maxAli{ bg->GetFreeSlotsForTeam(TEAM_ALLIANCE) };
