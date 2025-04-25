@@ -40,7 +40,7 @@ public:
 
     void OnBattlegroundEndReward(Battleground* bg, Player* player, TeamId /*winnerTeamId*/) override
     {
-        if (!sCFBG->IsEnableSystem() || !bg || !player || bg->isArena() || bg->GetBgTypeID() == BATTLEGROUND_BR)
+        if (!sCFBG->IsEnableSystem() || !bg || !player || bg->isArena())
             return;
 
         if (sCFBG->IsPlayerFake(player))
@@ -49,7 +49,7 @@ public:
 
     void OnBattlegroundRemovePlayerAtLeave(Battleground* bg, Player* player) override
     {
-        if (!sCFBG->IsEnableSystem() || bg->isArena() || bg->GetBgTypeID() == BATTLEGROUND_BR)
+        if (!sCFBG->IsEnableSystem() || bg->isArena())
             return;
 
         sCFBG->FitPlayerInTeam(player, false, bg);
@@ -58,10 +58,10 @@ public:
             sCFBG->ClearFakePlayer(player);
     }
 
-    void OnAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* /*leader*/, Group* /*group*/, BattlegroundTypeId bgTypeId, PvPDifficultyEntry const* /* bracketEntry */,
+    void OnAddGroup(BattlegroundQueue* queue, GroupQueueInfo* ginfo, uint32& index, Player* /*leader*/, Group* /*group*/, BattlegroundTypeId /* bgTypeId */, PvPDifficultyEntry const* /* bracketEntry */,
         uint8 /* arenaType */, bool /* isRated */, bool /* isPremade */, uint32 /* arenaRating */, uint32 /* matchmakerRating */, uint32 /* arenaTeamId */, uint32 /* opponentsArenaTeamId */) override
     {
-        if (!queue || bgTypeId == BATTLEGROUND_BR)
+        if (!queue)
             return;
 
         if (sCFBG->IsEnableSystem() && !ginfo->ArenaType && !ginfo->IsRated)
@@ -78,7 +78,7 @@ public:
 
     bool IsCheckNormalMatch(BattlegroundQueue* queue, Battleground* bg, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers) override
     {
-        if (!sCFBG->IsEnableSystem() || bg->isArena() || bg->GetBgTypeID() == BATTLEGROUND_BR)
+        if (!sCFBG->IsEnableSystem() || bg->isArena())
             return false;
 
         return sCFBG->CheckCrossFactionMatch(queue, bracket_id, minPlayers, maxPlayers);
@@ -86,7 +86,7 @@ public:
 
     bool CanSendMessageBGQueue(BattlegroundQueue* queue, Player* leader, Battleground* bg, PvPDifficultyEntry const* bracketEntry) override
     {
-        if (bg->isArena() || !sCFBG->IsEnableSystem() || bg->GetBgTypeID() == BATTLEGROUND_BR)
+        if (bg->isArena() || !sCFBG->IsEnableSystem())
         {
             // if it's arena OR the CFBG is disabled, let the core handle the announcement
             return true;
@@ -118,9 +118,9 @@ public:
             sCFBG->FitPlayerInTeam(player, player->GetBattleground() && !player->GetBattleground()->isArena(), player->GetBattleground());
     }
 
-    bool OnPlayerCanJoinInBattlegroundQueue(Player* player, ObjectGuid /*BattlemasterGuid*/ , BattlegroundTypeId BGTypeID, uint8 joinAsGroup, GroupJoinBattlegroundResult& err) override
+    bool OnPlayerCanJoinInBattlegroundQueue(Player* player, ObjectGuid /*BattlemasterGuid*/ , BattlegroundTypeId /*BGTypeID*/, uint8 joinAsGroup, GroupJoinBattlegroundResult& err) override
     {
-        if (!sCFBG->IsEnableSystem() || BGTypeID == BATTLEGROUND_BR)
+        if (!sCFBG->IsEnableSystem())
             return true;
 
         if (joinAsGroup)
