@@ -14,6 +14,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include "Battleground.h"
+
 class Player;
 class Battleground;
 class BattlegroundQueue;
@@ -122,7 +124,7 @@ public:
     inline bool IsEnableAvgIlvl() const { return _IsEnableAvgIlvl; }
     inline bool IsEnableBalancedTeams() const { return _IsEnableBalancedTeams; }
     inline bool IsEnableBalanceClassLowLevel() const { return _IsEnableBalanceClassLowLevel; }
-    inline bool IsEnableEvenTeams() const { return _IsEnableEvenTeams; }
+    inline bool IsEnableEvenTeams(Battleground* bg) const { return _IsEnableEvenTeams && bg->GetBgTypeID() != BATTLEGROUND_BR; }
     inline bool IsEnableResetCooldowns() const { return _IsEnableResetCooldowns; }
     inline uint32 EvenTeamsMaxPlayersThreshold() const { return _EvenTeamsMaxPlayersThreshold; }
     inline uint32 GetMaxPlayersCountInGroup() const { return _MaxPlayersCountInGroup; }
@@ -159,7 +161,7 @@ public:
     void SendMessageQueue(BattlegroundQueue* bgQueue, Battleground* bg, PvPDifficultyEntry const* bracketEntry, Player* leader);
 
     bool FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, BattlegroundBracketId bracket_id);
-    bool CheckCrossFactionMatch(BattlegroundQueue* bgqueue, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers);
+    bool CheckCrossFactionMatch(BattlegroundQueue* bgqueue, Battleground* bg, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers);
 
     bool IsRaceValidForFaction(uint8 teamId, uint8 race);
     TeamId getTeamWithLowerClass(Battleground* bg, Classes c);

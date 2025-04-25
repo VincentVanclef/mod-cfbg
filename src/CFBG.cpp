@@ -281,7 +281,7 @@ TeamId CFBG::SelectBgTeam(Battleground* bg, GroupQueueInfo* groupInfo, CrossFact
 
     // Config option `CFBG.EvenTeams.Enabled = 1`
     // if players in queue is equal to an even number
-    if (IsEnableEvenTeams() /*&& groupInfo->Players.size() % 2 == 0*/)
+    if (IsEnableEvenTeams(bg) /*&& groupInfo->Players.size() % 2 == 0*/)
     {
         auto cfGroupInfo = CrossFactionGroupInfo(groupInfo);
         auto playerLevel = cfGroupInfo.AveragePlayersLevel;
@@ -434,7 +434,7 @@ CFBG::RandomSkinInfo CFBG::GetRandomRaceMorph(TeamId team, uint8 playerClass, ui
 
 void CFBG::SetFakeRaceAndMorph(Player* player)
 {
-    if (!player->InBattleground() || player->GetTeamId(true) == player->GetBgTeamId() || IsPlayerFake(player))
+    if (!player->InBattleground() || player->GetBattlegroundTypeId() == BATTLEGROUND_BR || player->GetTeamId(true) == player->GetBgTeamId() || IsPlayerFake(player))
         return;
 
     // generate random race and morph
@@ -602,7 +602,7 @@ bool CFBG::IsPlayingNative(Player* player)
     return player->GetTeamId(true) == player->GetBGData().bgTeamId;
 }
 
-bool CFBG::CheckCrossFactionMatch(BattlegroundQueue* queue, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers)
+bool CFBG::CheckCrossFactionMatch(BattlegroundQueue* queue, Battleground* bg, BattlegroundBracketId bracket_id, uint32 minPlayers, uint32 maxPlayers)
 {
     if (!IsEnableSystem())
         return false;
@@ -612,7 +612,7 @@ bool CFBG::CheckCrossFactionMatch(BattlegroundQueue* queue, BattlegroundBracketI
 
     GroupsList groups{ queue->m_QueuedGroups[bracket_id][BG_QUEUE_CFBG].begin(), queue->m_QueuedGroups[bracket_id][BG_QUEUE_CFBG].end() };
 
-    if (IsEnableEvenTeams())
+    if (IsEnableEvenTeams(bg))
     {
         // Sort for check same count groups
         std::sort(groups.begin(), groups.end(), [](GroupQueueInfo const* a, GroupQueueInfo const* b) { return a->Players.size() > b->Players.size(); });
@@ -665,7 +665,7 @@ bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, Battl
 
     std::array<std::size_t, 2> playersInvitedToBGCount{};
 
-    if (IsEnableEvenTeams())
+    if (IsEnableEvenTeams(bg))
     {
         std::vector<std::pair<GroupQueueInfo*, GroupQueueInfo*>> sameGroups;
 
@@ -734,7 +734,7 @@ bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, Battl
     // Sort with join time (default)
     std::sort(groups.begin(), groups.end(), [](GroupQueueInfo const* a, GroupQueueInfo const* b) { return a->JoinTime < b->JoinTime; });
 
-    if (IsEnableEvenTeams())
+    if (IsEnableEvenTeams(bg))
     {
         InviteSameCountGroups(groups, bgqueue, maxAli, maxHorde, bg);
 
@@ -774,7 +774,7 @@ bool CFBG::FillPlayersToCFBG(BattlegroundQueue* bgqueue, Battleground* bg, Battl
     auto playersInBG{ static_cast<std::size_t>(playersInBGAli + playersInBGHorde) };
     auto evenTeamsCount{ EvenTeamsMaxPlayersThreshold() };
 
-    if (IsEnableEvenTeams() && evenTeamsCount && playersInBG < evenTeamsCount * 2)
+    if (IsEnableEvenTeams(bg) && evenTeamsCount && playersInBG < evenTeamsCount * 2)
     {
         int32 aliNeed = evenTeamsCount - playersInBGAli;
         int32 hordeNeed = evenTeamsCount - playersInBGHorde;
