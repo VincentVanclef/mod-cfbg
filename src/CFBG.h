@@ -25,23 +25,23 @@ class Group;
 struct GroupQueueInfo;
 struct PvPDifficultyEntry;
 
-enum FakeMorphs
+enum CFBG_FakeMorphs
 {
-    FAKE_M_FEL_ORC        = 21267,
-    FAKE_F_ORC            = 20316,
-    FAKE_M_DWARF          = 20317,
-    FAKE_M_NIGHT_ELF      = 20318,
-    FAKE_F_DRAENEI        = 20323,
-    FAKE_M_BROKEN_DRAENEI = 21105,
-    FAKE_M_TROLL          = 20321,
-    FAKE_M_HUMAN          = 19723,
-    FAKE_F_HUMAN          = 19724,
-    FAKE_M_BLOOD_ELF      = 20578,
-    FAKE_F_BLOOD_ELF      = 20579,
-    FAKE_F_GNOME          = 20320,
-    FAKE_M_GNOME          = 20580,
-    FAKE_F_TAUREN         = 20584,
-    FAKE_M_TAUREN         = 20585
+    CFBG_FAKE_M_FEL_ORC        = 21267,
+    CFBG_FAKE_F_ORC            = 20316,
+    CFBG_FAKE_M_DWARF          = 20317,
+    CFBG_FAKE_M_NIGHT_ELF      = 20318,
+    CFBG_FAKE_F_DRAENEI        = 20323,
+    CFBG_FAKE_M_BROKEN_DRAENEI = 21105,
+    CFBG_FAKE_M_TROLL          = 20321,
+    CFBG_FAKE_M_HUMAN          = 19723,
+    CFBG_FAKE_F_HUMAN          = 19724,
+    CFBG_FAKE_M_BLOOD_ELF      = 20578,
+    CFBG_FAKE_F_BLOOD_ELF      = 20579,
+    CFBG_FAKE_F_GNOME          = 20320,
+    CFBG_FAKE_M_GNOME          = 20580,
+    CFBG_FAKE_F_TAUREN         = 20584,
+    CFBG_FAKE_M_TAUREN         = 20585
 };
 
 constexpr auto FACTION_FROSTWOLF_CLAN = 729;
@@ -50,7 +50,7 @@ constexpr auto FACTION_STORMPIKE_GUARD = 730;
 // Cfbg settings
 constexpr auto SETTING_CFBG_RACE = 0;
 
-struct FakePlayer
+struct CFBG_FakePlayer
 {
     // Fake
     uint8   FakeRace;
@@ -64,7 +64,7 @@ struct FakePlayer
     TeamId  RealTeamID;
 };
 
-struct RaceData
+struct CFBG_RaceData
 {
     uint8 charClass;
     std::vector<uint8> availableRacesA;
@@ -146,7 +146,7 @@ public:
     TeamId ResolveBalancedTeam(TeamBalanceContext const& ctx);
 
     bool IsPlayerFake(Player* player);
-    FakePlayer const* GetFakePlayer(Player* player) const;
+    CFBG_FakePlayer const* GetFakePlayer(Player* player) const;
 
     // Per-war WG team lock, GUID-keyed so it survives leaving the war/zone and
     // relog. Cleared when the war ends.
@@ -170,6 +170,7 @@ public:
     void SetFakeRaceAndMorph(Player* player);
     void SetFakeRaceAndMorphForBF(Player* player, TeamId assignedTeam);
     void SetFactionForRace(Player* player, uint8 Race, TeamId teamId);
+    void SyncControlledFaction(Player* player);
     void ClearFakePlayer(Player* player);
     void DropFakePlayerRecord(Player* player);
     void ReapplyFakePlayer(Player* player);
@@ -216,7 +217,7 @@ private:
     // m_SelectionPools keeping projected sizes within allowedDiff, premades atomic.
     void SelectBalancedGroups(BattlegroundQueue* queue, BattlegroundBracketId bracketId, Battleground* bg, uint32 maxPerTeam, uint32 allowedDiff, bool evenTeamsEnabled);
 
-    std::unordered_map<Player*, FakePlayer> _fakePlayerStore;
+    std::unordered_map<Player*, CFBG_FakePlayer> _fakePlayerStore;
     std::unordered_map<ObjectGuid, TeamId> _wgWarAssignmentStore;
 
     // Per-war native census for ResolveWGWarTeam, reset in ClearWGWarAssignments.
@@ -226,7 +227,7 @@ private:
     uint32 _wgMajorityNativeKept = 0;
     std::unordered_map<Player*, bool> _forgetBGPlayersStore;
 
-    std::array<RaceData, 12> _raceData{};
+    std::array<CFBG_RaceData, 12> _raceData{};
     std::array<CFBGRaceInfo, 9> _raceInfo{};
 
     // For config

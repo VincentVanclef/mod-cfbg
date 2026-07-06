@@ -131,7 +131,7 @@ public:
         bool const forgetBG   = sCFBG->ShouldForgetBGPlayers(target);
         bool const inBG       = target->InBattleground();
         uint8 const preferredRace = target->GetPlayerSetting("mod-cfbg", SETTING_CFBG_RACE).value;
-        FakePlayer const* fake = sCFBG->GetFakePlayer(target);
+        CFBG_FakePlayer const* fake = sCFBG->GetFakePlayer(target);
 
         // === Header ===
         handler->PSendSysMessage("=== CFBG debug: {} ===", target->GetName());

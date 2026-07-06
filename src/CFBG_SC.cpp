@@ -201,6 +201,9 @@ public:
         // after service, so serving it on the next tick self-rate-limits.
         if (sCFBG->HasPendingForget(player))
             sCFBG->UpdateForget(player);
+
+        if (sCFBG->IsPlayerFake(player))
+            sCFBG->SyncControlledFaction(player);
     }
 
     void OnPlayerBeforeSendChatMessage(Player* player, uint32& type, uint32& lang, std::string& /*msg*/) override

@@ -58,18 +58,18 @@ CFBG::CFBG()
 {
     _raceData =
     {
-        RaceData{ CLASS_NONE,           { 0 }, { 0 } },
-        RaceData{ CLASS_WARRIOR,        { RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_DRAENEI  }, { RACE_ORC, RACE_TAUREN, RACE_TROLL } },
-        RaceData{ CLASS_PALADIN,        { RACE_HUMAN, RACE_DWARF, RACE_DRAENEI }, { RACE_BLOODELF } },
-        RaceData{ CLASS_HUNTER,         { RACE_DWARF, RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_BLOODELF } },
-        RaceData{ CLASS_ROGUE,          { RACE_HUMAN, RACE_DWARF, RACE_GNOME }, { RACE_ORC, RACE_TROLL, RACE_BLOODELF } },
-        RaceData{ CLASS_PRIEST,         { RACE_HUMAN, RACE_DWARF, RACE_DRAENEI  }, { RACE_TROLL, RACE_BLOODELF } },
-        RaceData{ CLASS_DEATH_KNIGHT,   { RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_BLOODELF } },
-        RaceData{ CLASS_SHAMAN,         { RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL  } },
-        RaceData{ CLASS_MAGE,           { RACE_HUMAN, RACE_GNOME }, { RACE_BLOODELF, RACE_TROLL } },
-        RaceData{ CLASS_WARLOCK,        { RACE_HUMAN, RACE_GNOME }, { RACE_ORC, RACE_BLOODELF } },
-        RaceData{ CLASS_NONE,           { 0 }, { 0 } },
-        RaceData{ CLASS_DRUID,          { RACE_HUMAN }, { RACE_TAUREN } }
+        CFBG_RaceData{ CLASS_NONE,           { 0 }, { 0 } },
+        CFBG_RaceData{ CLASS_WARRIOR,        { RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_DRAENEI  }, { RACE_ORC, RACE_TAUREN, RACE_TROLL } },
+        CFBG_RaceData{ CLASS_PALADIN,        { RACE_HUMAN, RACE_DWARF, RACE_DRAENEI }, { RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_HUNTER,         { RACE_DWARF, RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_ROGUE,          { RACE_HUMAN, RACE_DWARF, RACE_GNOME }, { RACE_ORC, RACE_TROLL, RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_PRIEST,         { RACE_HUMAN, RACE_DWARF, RACE_DRAENEI  }, { RACE_TROLL, RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_DEATH_KNIGHT,   { RACE_HUMAN, RACE_DWARF, RACE_GNOME, RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL, RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_SHAMAN,         { RACE_DRAENEI }, { RACE_ORC, RACE_TAUREN, RACE_TROLL  } },
+        CFBG_RaceData{ CLASS_MAGE,           { RACE_HUMAN, RACE_GNOME }, { RACE_BLOODELF, RACE_TROLL } },
+        CFBG_RaceData{ CLASS_WARLOCK,        { RACE_HUMAN, RACE_GNOME }, { RACE_ORC, RACE_BLOODELF } },
+        CFBG_RaceData{ CLASS_NONE,           { 0 }, { 0 } },
+        CFBG_RaceData{ CLASS_DRUID,          { RACE_HUMAN }, { RACE_TAUREN } }
     };
 
     _raceInfo =
@@ -374,7 +374,7 @@ void CFBG::EnforceBGTeamConsistency(Player* player)
     }
 
     // Cross-faction: must be faked to `assigned`.
-    FakePlayer const* info = GetFakePlayer(player);
+    CFBG_FakePlayer const* info = GetFakePlayer(player);
     if (!info)
         SetFakeRaceAndMorph(player);            // not faked yet -> apply
     else if (info->FakeTeamID != assigned)
@@ -462,25 +462,25 @@ uint32 CFBG::GetMorphFromRace(uint8 race, uint8 gender)
     switch (race)
     {
         case RACE_BLOODELF:
-            return gender == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_BLOOD_ELF : CFBG_FAKE_F_BLOOD_ELF;
         case RACE_ORC:
-            return gender == GENDER_MALE ? FAKE_M_FEL_ORC : FAKE_F_ORC;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_FEL_ORC : CFBG_FAKE_F_ORC;
         case RACE_TROLL:
-            return gender == GENDER_MALE ? FAKE_M_TROLL : FAKE_F_BLOOD_ELF;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_TROLL : CFBG_FAKE_F_BLOOD_ELF;
         case RACE_TAUREN:
-            return gender == GENDER_MALE ? FAKE_M_TAUREN : FAKE_F_TAUREN;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_TAUREN : CFBG_FAKE_F_TAUREN;
         case RACE_DRAENEI:
-            return gender == GENDER_MALE ? FAKE_M_BROKEN_DRAENEI : FAKE_F_DRAENEI;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_BROKEN_DRAENEI : CFBG_FAKE_F_DRAENEI;
         case RACE_DWARF:
-            return gender == GENDER_MALE ? FAKE_M_DWARF : FAKE_F_HUMAN;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_DWARF : CFBG_FAKE_F_HUMAN;
         case RACE_GNOME:
-            return gender == GENDER_MALE ? FAKE_M_GNOME : FAKE_F_GNOME;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_GNOME : CFBG_FAKE_F_GNOME;
         case RACE_NIGHTELF: // female is missing and male causes client crashes...
         case RACE_HUMAN:
-            return gender == GENDER_MALE ? FAKE_M_HUMAN : FAKE_F_HUMAN;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_HUMAN : CFBG_FAKE_F_HUMAN;
         default:
             // Default: Blood elf.
-            return gender == GENDER_MALE ? FAKE_M_BLOOD_ELF : FAKE_F_BLOOD_ELF;
+            return gender == GENDER_MALE ? CFBG_FAKE_M_BLOOD_ELF : CFBG_FAKE_F_BLOOD_ELF;
     }
 }
 
@@ -508,7 +508,7 @@ void CFBG::SetFakeRaceAndMorph(Player* player)
         skinInfo.second = GetMorphFromRace(skinInfo.first, player->getGender());
     }
 
-    FakePlayer fakePlayerInfo
+    CFBG_FakePlayer fakePlayerInfo
     {
         skinInfo.first,
         skinInfo.second,
@@ -547,7 +547,7 @@ void CFBG::SetFakeRaceAndMorphForBF(Player* player, TeamId assignedTeam)
         skinInfo.second = GetMorphFromRace(skinInfo.first, player->getGender());
     }
 
-    FakePlayer fakePlayerInfo
+    CFBG_FakePlayer fakePlayerInfo
     {
         skinInfo.first,
         skinInfo.second,
@@ -576,6 +576,17 @@ void CFBG::SetFactionForRace(Player* player, uint8 Race, TeamId teamId)
     ChrRacesEntry const* DBCRace = sChrRacesStore.LookupEntry(Race);
     player->SetFaction(DBCRace ? DBCRace->FactionID : 0);
 
+    SyncControlledFaction(player);
+}
+
+void CFBG::SyncControlledFaction(Player* player)
+{
+    if (!player)
+        return;
+
+    // Keep pets, charmed units, guardians, and other controlled units on the
+    // same visible faction as the faked player. This also covers units created
+    // or refreshed after the original team swap.
     for (Unit* controlled : player->m_Controlled)
     {
         if (controlled)
@@ -620,7 +631,7 @@ void CFBG::DropFakePlayerRecord(Player* player)
 
 void CFBG::ReapplyFakePlayer(Player* player)
 {
-    FakePlayer const* info = GetFakePlayer(player);
+    CFBG_FakePlayer const* info = GetFakePlayer(player);
     if (!info)
         return;
 
@@ -637,7 +648,7 @@ bool CFBG::IsPlayerFake(Player* player)
     return _fakePlayerStore.contains(player);
 }
 
-FakePlayer const* CFBG::GetFakePlayer(Player* player) const
+CFBG_FakePlayer const* CFBG::GetFakePlayer(Player* player) const
 {
     return Acore::Containers::MapGetValuePtr(_fakePlayerStore, player);
 }
