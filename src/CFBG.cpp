@@ -349,6 +349,11 @@ void CFBG::EnforceBGTeamConsistency(Player* player)
     if (!bg || bg->isArena())
         return;
 
+    // EndBattleground already restored real identities. Do not re-fake a ghost
+    // who resurrects during the post-match WAIT_LEAVE window.
+    if (bg->GetStatus() == STATUS_WAIT_LEAVE)
+        return;
+
     TeamId const assigned = player->GetBgTeamId();
 
     // Native: must not carry a fake.
